@@ -1,0 +1,22 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package keyshare;
+
+service Coordinator {
+    rpc ListKeys (google.protobuf.Empty) returns (KeyListReply);
+    rpc AddMnemonic (AddMnemonicRequest) returns (AddMnemonicReply);
+}
+
+message AddMnemonicRequest {
+    string mnemonic = 1;
+    string password = 2;
+    uint32 index = 3;
+}
+
+message AddMnemonicReply {
+    string message = 1;
+}
+
+message KeyListReply {
+    repeated string items = 1;
+}

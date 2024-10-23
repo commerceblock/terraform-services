@@ -1,0 +1,51 @@
+{
+    "lightning": {
+        "node_id": "02ae1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208888",
+        "ip_address": "67.227.190.47",
+        "port": 9735,
+        "network": "testnet",
+        "container_name": "lightningd-test"
+    },
+    "channels": [
+        {
+            "node_id": "02a1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208889",
+            "funds": 0.001
+        },
+        {
+            "node_id": "02b1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208890",
+            "funds": 0.002
+        },
+        {
+            "node_id": "02c1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208891",
+            "funds": 0.001
+        },
+        {
+            "node_id": "02d1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208892",
+            "funds": 0.002
+        },
+        {
+            "node_id": "02e1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208893",
+            "funds": 0.001
+        },
+        {
+            "node_id": "02f1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208894",
+            "funds": 0.001
+        },
+        {
+            "node_id": "02g1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208895",
+            "funds": 0.002
+        },
+        {
+            "node_id": "02h1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208896",
+            "funds": 0.002
+        },
+        {
+            "node_id": "02i1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208897",
+            "funds": 0.001
+        },
+        {
+            "node_id": "02j1e6091d2a9c4db5096558668d2456b1c0e9067cb72273eab1199bcfb208898",
+            "funds": 0.001
+        }
+    ]
+}

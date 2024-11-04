@@ -18,8 +18,12 @@ def check_lightning_cli():
 
 # Main program execution
 def main():
+    print("Running OFAC checks...")
+    print("Updating sanctioned addresses...")
     address_update.execute()
+    print("Checking UTXOs...")
     check_utxos.execute()
+    print("Checking IPs...")
     check_ips.execute()
 
 if __name__ == "__main__":

@@ -57,12 +57,16 @@ def execute():
 
     peer_addresses = get_peer_addresses()
 
+    print("Checking peer addresses...")
+    print('Peer addresses:', peer_addresses)
+
     if peer_addresses is None:
         print("No peer addresses found.")
         return
 
     for peer in peer_addresses['peers']:
         peer_id = peer['id']
+        print('Checking peer:', peer_id)
         for netaddr in peer['netaddr']:
             if ip_in_list(netaddr, ip_patterns):
                 channels = get_peer_channels(peer_id)

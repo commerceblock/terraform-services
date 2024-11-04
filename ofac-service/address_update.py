@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ET
 import argparse
 import pathlib
 import json
-from pyln.client import LightningRpc, RpcError
 from main import run_lightning_cli
 
 

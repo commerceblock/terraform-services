@@ -5,6 +5,8 @@ import argparse
 import pathlib
 import json
 from pyln.client import LightningRpc, RpcError
+from main import run_lightning_cli
+
 
 FEATURE_TYPE_TEXT = "Digital Currency Address - "
 NAMESPACE = {'sdn': 'https://sanctionslistservice.ofac.treas.gov/api/PublicationPreview/exports/ADVANCED_XML'}
@@ -76,7 +78,7 @@ def write_addresses_json(addresses, asset, outpath):
         out.write(json.dumps(addresses, indent=2)+"\n")
 
 
-def execute(lightningCli):
+def execute():
     args = parse_arguments()
 
     tree = ET.parse(args.sdn)

@@ -2,63 +2,58 @@ import json
 import requests
 import utils
 import sanction
-import subprocess
-from pyln.client import LightningRpc, RpcError
+from main import run_lightning_cli  # Import the Docker-based command executor
 
-def get_channels(lightningCli):
+def get_channels():
     try:
-        # Use lightningCli to directly fetch the list of peer channels
-        data = lightningCli.listpeerchannels()
+        # Use run_lightning_cli to fetch the list of peer channels
+        data = run_lightning_cli("listpeerchannels")
         
-        # Extract the channels list
-        channels = data["channels"]
+        # Parse the JSON response
+        data_json = json.loads(data)
+        channels = data_json.get("channels", [])
         return channels
 
-    except RpcError as e:
+    except Exception as e:
         print("Error fetching channels:", e)
         return None
 
 def get_funding_utxo_address(settings_data, txid, vout):
-    
-    url = "%s/api/tx/%s" % (settings_data["esploraUrl"], txid)
-
+    url = f"{settings_data['esploraUrl']}/api/tx/{txid}"
     response = requests.get(url)
-
-    data = json.loads(response.text)
-
+    data = response.json()
     address = data['vin'][vout]['prevout']['scriptpubkey_address']
-
     return address
 
-def close_channel(lightningCli, channel_id):
+def close_channel(channel_id):
     try:
-        # Use lightningCli to directly close the specified channel
-        response = lightningCli.close(channel_id)
-        # Print the response from the close command
-        print("response - close_channel")
-        print(response)
-    except RpcError as e:
+        # Use run_lightning_cli to close the specified channel
+        response = run_lightning_cli(f"close {channel_id}")
+        print("Response from close_channel:", response)
+    except Exception as e:
         print("Error closing channel:", e)
 
-def execute(lightningCli):
-     
+def execute():
     settings_data = utils.get_settings_data()
+    channels = get_channels()
 
-    channels = get_channels(lightningCli)
+    if channels is None:
+        print("No channels found.")
+        return
 
+    # Filter for relevant channels
     relevant_channels = [channel for channel in channels if channel['state'] == 'CHANNELD_NORMAL' and channel['opener'] == 'remote']
-
+    
     print("Channels:")
     for channel in relevant_channels:
         short_channel_id = channel['short_channel_id']
-
         txid = channel['funding_txid']
         vout = channel['funding_outnum']
 
         address = get_funding_utxo_address(settings_data, txid, vout)
 
         if sanction.is_sanctioned_address(address):
-            close_channel(lightningCli, short_channel_id)
+            close_channel(short_channel_id)
 
 if __name__ == '__main__':
     execute()

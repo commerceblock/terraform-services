@@ -78,11 +78,15 @@ def write_addresses_json(addresses, asset, outpath):
 
 
 def execute():
+    print("Parsing arguments...")
     args = parse_arguments()
+    print('Arguments:', args)
 
+    print("Parsing sdn_advanced.xml...")
     tree = ET.parse(args.sdn)
     root = tree.getroot()
 
+    
     assets = list()
     if type(args.assets) == str:
         assets.append(args.assets)

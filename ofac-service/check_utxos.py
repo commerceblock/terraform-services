@@ -44,11 +44,15 @@ def execute():
     # Filter for relevant channels
     relevant_channels = [channel for channel in channels if channel['state'] == 'CHANNELD_NORMAL' and channel['opener'] == 'remote']
     
-    print("Channels:")
+    print("Channels:", relevant_channels)
     for channel in relevant_channels:
         short_channel_id = channel['short_channel_id']
         txid = channel['funding_txid']
         vout = channel['funding_outnum']
+
+        print("Checking channel:", short_channel_id)
+        print("Funding TXID:", txid)
+        print("VOUT:", vout)
 
         address = get_funding_utxo_address(settings_data, txid, vout)
 

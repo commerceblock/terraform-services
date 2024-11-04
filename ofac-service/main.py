@@ -1,46 +1,45 @@
 import configparser
 import os
-from pyln.client import LightningRpc, RpcError
+import subprocess
 import address_update
 import check_utxos
 import check_ips
 
-# Read configuration from the INI file
-config = configparser.ConfigParser()
-config.read('config.ini')
+# Function to execute lightning-cli commands inside the Docker container
+def run_lightning_cli(command):
+    docker_command = [
+        "docker", "exec", "lightningd-mainnet", "lightning-cli"
+    ] + command.split()
 
-# Initialize the LightningRpc instance
-def initialize_lightning_cli():
     try:
-        rpc_path = os.path.expanduser(config['lightning']['rpc_path'])
-        print('Trying to find LightningRPC at:', rpc_path)
-        lightningCli = LightningRpc(rpc_path)
-        print('RPC Set was:', rpc_path)
-        return lightningCli
-    except KeyError:
-        print("Error: Missing 'rpc_path' in the config file.")
+        # Execute the command and capture the output
+        result = subprocess.run(docker_command, check=True, capture_output=True, text=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print("Error executing command:", e)
+        print("Output:", e.output)
+        return None
+
+# Checks if the Lightning RPC connection (through Docker exec) is working
+def check_lightning_cli():
+    try:
+        output = run_lightning_cli("listpeers")
+        if output:
+            print("Connection to lightning-cli is successful.")
+            return True
+        return False
     except Exception as e:
-        print("Error initializing LightningRpc:", e)
-    return None
-
-# Checks if the Lightning RPC connection is working
-def check_lightning_cli(lightningCli):
-    try:
-        lightningCli.listpeers()
-        return True
-    except RpcError as e:
         print("Error connecting to lightning-cli:", e)
         return False
 
 # Main program execution
-def main(lightningCli):
-    address_update.execute(lightningCli)
-    check_utxos.execute(lightningCli)
-    check_ips.execute(lightningCli)
+def main():
+    address_update.execute()
+    check_utxos.execute()
+    check_ips.execute()
 
 if __name__ == "__main__":
-    lightningCli = initialize_lightning_cli()
-    if lightningCli and check_lightning_cli(lightningCli):
-        main(lightningCli)
+    if check_lightning_cli():
+        main()
     else:
         print("Failed to initialize or connect to Lightning RPC.")

@@ -8,7 +8,6 @@ def check_lightning_cli():
     try:
         output = run_lightning_cli("listpeers")
         if output:
-            print(output)
             print("Connection to lightning-cli is successful.")
             return True
         return False

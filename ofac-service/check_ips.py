@@ -58,7 +58,7 @@ def execute():
     peer_addresses = get_peer_addresses()
 
     print("Checking peer addresses...")
-    print('Peer addresses:', peer_addresses)
+    print('Peer addresses:', len(peer_addresses))
 
     if peer_addresses is None:
         print("No peer addresses found.")

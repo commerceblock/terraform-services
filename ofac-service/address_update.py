@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 import argparse
 import pathlib
 import json
-from main import run_lightning_cli
+from lightning import run_lightning_cli
 
 
 FEATURE_TYPE_TEXT = "Digital Currency Address - "

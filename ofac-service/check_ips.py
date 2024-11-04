@@ -1,7 +1,5 @@
 import json
-import requests
-import utils
-from main import run_lightning_cli  # Import the Docker-based command executor
+from lightning import run_lightning_cli
 
 def get_peer_addresses():
     try:

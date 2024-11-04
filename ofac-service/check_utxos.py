@@ -2,7 +2,7 @@ import json
 import requests
 import utils
 import sanction
-from main import run_lightning_cli  # Import the Docker-based command executor
+from lightning import run_lightning_cli
 
 def get_channels():
     try:

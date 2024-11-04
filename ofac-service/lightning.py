@@ -1,5 +1,3 @@
-import configparser
-import os
 import subprocess
 
 # Function to execute lightning-cli commands inside the Docker container

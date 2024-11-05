@@ -3,8 +3,8 @@ from datetime import datetime, timedelta
 import json
 import requests
 import psycopg2
-
 import utils
+from lightning import run_lightning_cli
 
 def save(settings_data, data_json, start_time, end_time):
 
@@ -43,31 +43,25 @@ def save(settings_data, data_json, start_time, end_time):
     conn.close()
 
 def execute(hours):
+    print("Executing execute function with hours:", hours)
+    # Retrieve settings data
     settings_data = utils.get_settings_data()
-
-    rpc_method = "v1/bkpr-channelsapy"
-
-    url = "%s/%s" % (settings_data["nodeRestUrl"], rpc_method)
-
-    headers = {
-        "content-type": "application/json",
-        "Rune": settings_data["rune"]
-    }
-
+    # Calculate start and end times
     start_time = int((datetime.now() - timedelta(hours=hours)).timestamp())
     end_time = int(datetime.now().timestamp())
 
-    payload = { "start_time": start_time, "end_time": end_time }
+    try:
+        # Run lightning-cli command to get channels APY data
+        output = run_lightning_cli(f"bkpr-channelsapy {start_time} {end_time}")
+        # Parse JSON output from lightning-cli
+        data_json = json.loads(output)
+        # Save the data (implement save function as needed)
+        save(settings_data, data_json, start_time, end_time)
+        return data_json
 
-    response = requests.post(url, headers=headers, json=payload)
-
-    data_json = json.loads(response.text)
-
-    save(settings_data, data_json, start_time, end_time)
-
-    return data_json
-
-    # print(data)
+    except Exception as e:
+        print("Error executing bkpr-channelsapy command:", e)
+        return None
 
 if __name__ == "__main__":
     execute()

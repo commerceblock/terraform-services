@@ -3,41 +3,41 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 import json
 import requests
-
 import utils
+from lightning import run_lightning_cli
 
 def execute(hours=24):
     print("Executing total-fee-income.py")
 
-    settings_data = utils.get_settings_data()
-
-    rpc_method = "v1/bkpr-listaccountevents"
-
-    url = "%s/%s" % (settings_data["nodeRestUrl"], rpc_method)
-
-    headers = {
-        "content-type": "application/json",
-        "Rune": settings_data["rune"]
-    }
-
-    response = requests.post(url, headers=headers)
-
-    return calculate_total_fee_income(response.text, hours)
+    try:
+        # Run lightning-cli command to get account events
+        output = run_lightning_cli("bkpr-listaccountevents")
+        
+        if not output:
+            print("No output from lightning-cli.")
+            return {}
+        
+        # Parse JSON output from lightning-cli
+        data = json.loads(output)
+        
+        # Calculate total fee income based on the parsed data
+        return calculate_total_fee_income(data, hours)
+        
+    except Exception as e:
+        print("Error executing lightning-cli command:", e)
+        return {}
     
-def calculate_total_fee_income(json_data, hours=24):
+def calculate_total_fee_income(data, hours=24):
     """
     Calculate the total fee income grouped by type for the last 'hours' hours.
 
     Parameters:
-    json_data (str): JSON string containing the event data.
+    data (dict): Parsed JSON data containing the event data.
     hours (int): The number of hours to look back from the current time. Default is 24.
 
     Returns:
     dict: A dictionary with the aggregated sums grouped by type.
     """
-    # Parse the JSON data
-    data = json.loads(json_data)
-
     # Get the current time
     current_time = datetime.now()
 
@@ -61,4 +61,3 @@ def calculate_total_fee_income(json_data, hours=24):
 
     # Convert defaultdict to a regular dictionary before returning
     return dict(aggregated_values_by_type)
-

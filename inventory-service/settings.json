@@ -1,11 +1,9 @@
 {
     "email": "",
     "apiKey": "",
-    "rune": "Iwrtjvwdt_27bOkKKMZFs54IxBAnsmhzqfy53xUkhAw9MQ==",
-    "nodeRestUrl": "http://127.0.0.1:8183",
-    "pg_host": "127.0.0.1",
+    "pg_host": "",
     "pg_port": 5432,
     "pg_db": "cln_data",
-    "pg_user": "postgres",
-    "pg_password": "postgres"
+    "pg_user": "",
+    "pg_password": ""
 }

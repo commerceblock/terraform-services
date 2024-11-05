@@ -3,6 +3,19 @@ import total_fee_income
 import swiss_pay_invoice
 import stats
 import event_earnings
+from lightning import run_lightning_cli
+
+# Checks if the Lightning RPC connection (through Docker exec) is working
+def check_lightning_cli():
+    try:
+        output = run_lightning_cli("listpeers")
+        if output:
+            print("Connection to lightning-cli is successful.")
+            return True
+        return False
+    except Exception as e:
+        print("Error connecting to lightning-cli:", e)
+        return False
 
 @click.command(name='total-fee-income' )
 @click.option('--hours', default=24, help='Number of hours to aggregate data for. Defaults to 24.')
@@ -41,14 +54,8 @@ cli.add_command(payment)
 cli.add_command(execute_stats)
 cli.add_command(execute_event_earnings)
 
-# Define rune as a global variable
-rune = ""
-
-def ask_for_rune():
-    global rune
-    rune_value = input("Please enter the rune value: ")
-    rune= rune_value
-
 if __name__ == "__main__":
-    ask_for_rune()
-    cli()
+    if check_lightning_cli():
+        cli()
+    else:
+        print("Failed to initialize or connect to Lightning RPC.")
